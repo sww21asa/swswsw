@@ -1435,7 +1435,7 @@ function redzlib:MakeWindow(Configs)
     local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
         Size = UDim2.fromOffset(UISizeX, UISizeY),
         Position = UDim2.new(0.5, -UISizeX/2, 0.5, -UISizeY/2),
-        BackgroundTransparency = 0,
+        BackgroundTransparency = 1,
         BackgroundColor3 = Color3.fromRGB(0, 0, 0),
         Name = "Hub"
     }), "Main")
@@ -2449,23 +2449,6 @@ function redzlib:MakeWindow(Configs)
                 end
             end
             return Dropdown
-        end
-
-        function Tab:Addsizedropdown()
-            return Tab:AddDropdown({
-                Name = "Select UI Size",
-                Options = {"Small", "Medium", "Large"},
-                Default = "Large",
-                Callback = function(Value)
-                    if Value == "Small" then
-                        MainFrame.Size = UDim2.fromOffset(450, 300)
-                    elseif Value == "Medium" then
-                        MainFrame.Size = UDim2.fromOffset(550, 380)
-                    elseif Value == "Large" then
-                        MainFrame.Size = UDim2.fromOffset(630, 440)
-                    end
-                end
-            })
         end
 
         function Tab:AddSlider(Configs)

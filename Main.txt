@@ -1597,44 +1597,9 @@ function redzlib:MakeWindow(Configs)
         Name = "Minimize"
     })
 
-    local SizeControlButton = Create("ImageButton", {
-        Size = UDim2.new(0, 20, 0, 20),
-        Position = UDim2.new(1, -60, 0.5),
-        AnchorPoint = Vector2.new(1, 0.5),
-        BackgroundTransparency = 1,
-        Image = "rbxassetid://6966627582",
-        ImageColor3 = Theme["Color Text"],
-        AutoButtonColor = false,
-        Name = "SizeControl"
-    })
-
-    local SizeTooltip = Create("Frame", ScreenGui, {
-        Size = UDim2.fromOffset(120, 30),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        BackgroundColor3 = Theme["Color Element"],
-        BackgroundTransparency = 0.25,
-        Visible = false,
-        ZIndex = 10
-    })
-    Make("Stroke", SizeTooltip, {Color = Theme["Color Stroke"]})
-    Make("Corner", SizeTooltip, UDim.new(0, 6))
-    
-    local TooltipText = InsertTheme(Create("TextLabel", SizeTooltip, {
-        Size = UDim2.new(1, -10, 1, -10),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        AnchorPoint = Vector2.new(0.5, 0.5),
-        BackgroundTransparency = 1,
-        Text = "Click to change size",
-        TextColor3 = Theme["Color Text"],
-        TextSize = 10,
-        Font = Enum.Font.Gotham,
-        RichText = true
-    }), "Text")
-
     SetChildren(ButtonsFolder, {
         CloseButton,
-        MinimizeButton,
-        SizeControlButton
+        MinimizeButton
     })
     
     local Minimized, SaveSize, WaitClick
@@ -1677,76 +1642,6 @@ function redzlib:MakeWindow(Configs)
         
         WaitClick = false
     end
-
-    local SizeStates = {"Small", "Medium", "Large", "Default"}
-    local CurrentSizeState = 3
-    
-    function Window:CycleWindowSize()
-        CurrentSizeState = CurrentSizeState + 1
-        if CurrentSizeState > #SizeStates then
-            CurrentSizeState = 1
-        end
-        
-        local newSize
-        if CurrentSizeState == 1 then
-            newSize = UDim2.fromOffset(450, 300)
-            MainScroll.Size = UDim2.new(0, 130, 1, -28)
-            SizeControlButton.ImageColor3 = Color3.fromRGB(255, 100, 100)
-        elseif CurrentSizeState == 2 then
-            newSize = UDim2.fromOffset(550, 380)
-            MainScroll.Size = UDim2.new(0, 140, 1, -28)
-            SizeControlButton.ImageColor3 = Color3.fromRGB(255, 200, 100)
-        elseif CurrentSizeState == 3 then
-            newSize = UDim2.fromOffset(630, 440)
-            MainScroll.Size = UDim2.new(0, 150, 1, -28)
-            SizeControlButton.ImageColor3 = Theme["Color Text"]
-        else
-            newSize = UDim2.fromOffset(unpack(redzlib.Save.UISize))
-            MainScroll.Size = UDim2.new(0, redzlib.Save.TabSize, 1, -28)
-            SizeControlButton.ImageColor3 = Theme["Color Text"]
-        end
-        Containers.Size = UDim2.new(1, -MainScroll.Size.X.Offset, 1, -28)
-        CreateTween({MainFrame, "Size", newSize, 0.3, true})
-        redzlib.Save.UISize = {newSize.X.Offset, newSize.Y.Offset}
-        redzlib.Save.TabSize = MainScroll.Size.X.Offset
-        SaveJson("Kayrus999 library V5.json", redzlib.Save)
-        ShowSizeTooltip(SizeStates[CurrentSizeState])
-    end
-
-    function ShowSizeTooltip(state)
-        TooltipText.Text = "Size: " .. state
-        SizeTooltip.Position = UDim2.fromOffset(
-            SizeControlButton.AbsolutePosition.X + SizeControlButton.AbsoluteSize.X/2 - 60,
-            SizeControlButton.AbsolutePosition.Y - 35
-        )
-        SizeTooltip.Visible = true
-        CreateTween({SizeTooltip, "BackgroundTransparency", 0.25, 0.1})
-        
-        task.wait(2)
-        CreateTween({SizeTooltip, "BackgroundTransparency", 1, 0.3, true})
-        SizeTooltip.Visible = false
-    end
-
-    SizeControlButton.MouseEnter:Connect(function()
-        CreateTween({SizeControlButton, "ImageColor3", Theme["Color Theme"], 0.2})
-        SizeTooltip.Position = UDim2.fromOffset(
-            SizeControlButton.AbsolutePosition.X + SizeControlButton.AbsoluteSize.X/2 - 60,
-            SizeControlButton.AbsolutePosition.Y - 35
-        )
-        SizeTooltip.Visible = true
-        CreateTween({SizeTooltip, "BackgroundTransparency", 0.25, 0.1})
-    end)
-
-    SizeControlButton.MouseLeave:Connect(function()
-        CreateTween({SizeControlButton, "ImageColor3", Theme["Color Text"], 0.2})
-        CreateTween({SizeTooltip, "BackgroundTransparency", 1, 0.3, true})
-        task.wait(0.3)
-        SizeTooltip.Visible = false
-    end)
-
-    SizeControlButton.Activated:Connect(function()
-        Window:CycleWindowSize()
-    end)
 
     function Window:Minimize()
         MainFrame.Visible = not MainFrame.Visible
